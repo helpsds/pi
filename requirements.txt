@@ -1,0 +1,6 @@
+numpy==2.2.6
+scipy==1.18.1
+opencv-python==5.0.0.93
+matplotlib==3.11.1
+PyYAML>=6.0
+pyarrow>=20

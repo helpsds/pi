@@ -1,0 +1,42 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+
+# Local dependencies and caches
+lerobot/
+third_party/
+.cache/
+.env
+*.token
+
+# Large experiment artifacts
+data/
+outputs/
+checkpoints/
+*.safetensors
+*.ckpt
+*.pt
+*.pth
+*.parquet
+*.npz
+*.hdf5
+*.h5
+*.tar
+*.zip
+wandb/
+
+# Logs and generated scratch files
+*.log
+*.pid
+tmp/
+
+# Curated lightweight artifacts are explicitly tracked.
+!results/
+!results/**/*.json
+!results/**/*.csv
+!assets/
+!assets/figures/**/*.png
+!assets/videos/**/*.mp4

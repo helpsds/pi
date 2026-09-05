@@ -1,0 +1,26 @@
+robot: Panda
+control_freq: 20
+horizon: 300
+image_size: 256
+camera_names: [agentview, robot0_eye_in_hand]
+table_full_size: [0.9, 0.8, 0.05]
+table_offset: [0.0, 0.0, 0.8]
+object_names: [red_cube, green_cube, cylinder, small_box]
+bin_names: [red_bin, blue_bin]
+bin_positions:
+  red_bin: [0.18, -0.24, 0.825]
+  blue_bin: [0.18, 0.24, 0.825]
+spawn_x_range: [-0.20, 0.02]
+spawn_y_range: [-0.20, 0.20]
+min_object_separation: 0.095
+action_position_scale: 0.05
+action_rotation_scale: 0.5
+grasp_lift_height: 0.06
+expert_position_gain: 12.0
+expert_max_position_command: 0.75
+expert_reach_tolerance: 0.012
+expert_approach_height: 0.12
+expert_lift_height: 0.16
+expert_bin_approach_height: 0.18
+expert_bin_release_height: 0.055
+expert_gripper_settle_steps: 15

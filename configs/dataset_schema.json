@@ -1,0 +1,22 @@
+{
+  "codebase_version": "v3.0",
+  "fps": 10,
+  "total_episodes": 200,
+  "total_frames": 52118,
+  "total_tasks": 18,
+  "robot_type": "Panda",
+  "features": {
+    "observation.images.front": {"dtype": "image", "shape": [256, 256, 3]},
+    "observation.images.wrist": {"dtype": "image", "shape": [256, 256, 3]},
+    "observation.state": {
+      "dtype": "float32",
+      "shape": [8],
+      "names": ["x", "y", "z", "rx", "ry", "rz", "finger_1", "finger_2"]
+    },
+    "action": {
+      "dtype": "float32",
+      "shape": [7],
+      "names": ["dx", "dy", "dz", "drx", "dry", "drz", "gripper"]
+    }
+  }
+}

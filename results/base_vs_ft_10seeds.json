@@ -1,0 +1,39 @@
+{
+  "protocol": {
+    "tasks": 8,
+    "seeds_per_task": 10,
+    "episodes_per_model": 80,
+    "environment_seeds": [
+      12000,
+      12001,
+      12002,
+      12003,
+      12004,
+      12005,
+      12006,
+      12007,
+      12008,
+      12009
+    ],
+    "n_action_steps": 10
+  },
+  "base": {
+    "label": "base",
+    "n_action_steps": 10,
+    "successes": 0,
+    "episodes": 80,
+    "success_rate": 0.0,
+    "grasp_successes": 0,
+    "grasp_rate": 0.0
+  },
+  "ft_030000": {
+    "label": "ft_030000",
+    "n_action_steps": 10,
+    "successes": 43,
+    "episodes": 80,
+    "success_rate": 0.5375,
+    "grasp_successes": 54,
+    "grasp_rate": 0.675
+  },
+  "success_rate_delta": 0.5375
+}

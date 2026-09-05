@@ -1,0 +1,9 @@
+task,base_successes,ft_successes,episodes_per_policy
+red cube to red bin,0,4,10
+red cube to blue bin,0,4,10
+green cube to red bin,0,6,10
+green cube to blue bin,0,8,10
+cylinder to red bin,0,5,10
+cylinder to blue bin,0,5,10
+small box to red bin,0,5,10
+small box to blue bin,0,6,10
