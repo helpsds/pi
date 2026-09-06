@@ -15,6 +15,8 @@ The main result is a **0% → 53.75%** task-success improvement over π0.5 Base 
 
 ## Qualitative results
 
+**[Watch the 52-second Base vs FT demo](assets/videos/pi05_base_vs_ft_demo.mp4)**
+
 | Base failure | Fine-tuned success |
 |---|---|
 | [red cube → blue bin](assets/videos/base_red_cube_blue_bin_failure.mp4) | [red cube → blue bin](assets/videos/ft_red_cube_blue_bin_success.mp4) |
