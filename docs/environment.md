@@ -40,7 +40,7 @@ git -C third_party/robocasa checkout a07e365c958c4216cd6bbd5f30b47f09a65c6f00
 python3.12 -m venv .venv
 source .venv/bin/activate
 python -m pip install --upgrade pip
-python -m pip install -e ./lerobot
+python -m pip install -e './lerobot[training,pi]'
 python -m pip install numpy scipy opencv-python matplotlib pyyaml pyarrow
 ```
 
