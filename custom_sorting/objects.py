@@ -6,7 +6,7 @@ import numpy as np
 from robosuite.models.objects import BoxObject, CompositeObject, CylinderObject
 
 
-OBJECT_COLORS = {
+OBJECT_COLORS = {  # (R, G, B, A)
     "red_cube": (0.90, 0.08, 0.08, 1.0),
     "green_cube": (0.08, 0.75, 0.12, 1.0),
     "cylinder": (0.95, 0.75, 0.08, 1.0),
@@ -16,9 +16,9 @@ OBJECT_COLORS = {
 
 def make_sorting_objects(rng: np.random.Generator) -> dict[str, object]:
     """Create four free-joint, graspable MuJoCo primitives."""
-    common = dict(density=350.0, friction=(1.0, 0.005, 0.0001), rng=rng)
+    common = dict(density=350.0, friction=(1.0, 0.005, 0.0001), rng=rng)  # (（mass）, friction (sliding, torsional, rolling))
     return {
-        "red_cube": BoxObject(name="red_cube", size=(0.022, 0.022, 0.022), rgba=OBJECT_COLORS["red_cube"], **common),
+        "red_cube": BoxObject(name="red_cube", size=(0.022, 0.022, 0.022), rgba=OBJECT_COLORS["red_cube"], **common),  #MuJoCo box 的 size 通常表示半尺寸。
         "green_cube": BoxObject(
             name="green_cube", size=(0.021, 0.021, 0.026), rgba=OBJECT_COLORS["green_cube"], **common
         ),

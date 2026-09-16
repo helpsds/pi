@@ -2,6 +2,7 @@
 
 Action semantics are identical for data collection, training and evaluation::
 
+    EEF: 末端执行器
     action[0:3]  normalized Cartesian EEF delta (x, y, z)
     action[3:6]  normalized axis-angle EEF rotation delta (rx, ry, rz)
     action[6]    gripper command (-1 open, +1 close)
@@ -99,8 +100,9 @@ class SortingEnv(ManipulationEnv):
         # A slightly elevated front view keeps both fixed bins in frame.
         arena.set_camera(
             camera_name="agentview",
-            pos=(0.65, 0.0, 1.35),
-            quat=(0.653, 0.271, 0.271, 0.653),
+            #六自由度
+            pos=(0.65, 0.0, 1.35), #（xyz）
+            quat=(0.653, 0.271, 0.271, 0.653),#四元数
         )
 
         self.sorting_objects = make_sorting_objects(self.rng)

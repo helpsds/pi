@@ -6,7 +6,7 @@
 
 ![桌子居中、周围可见地面的 MuJoCo Sorting 全景](assets/figures/sorting_scene.png)
 
-这张图是本项目场景的真实 MuJoCo 渲染，不是示意图。桌子居中，旁边是配备双指夹爪的 Franka Emika Panda 七轴机械臂；桌面上有红/绿方块、黄色圆柱体、紫色小盒子和红/蓝两个目标箱。四种物体 × 两个箱子构成八种任务。
+图片是本项目场景的真实 MuJoCo 渲染，不是示意图。桌子居中，旁边是配备双指夹爪的 Franka Emika Panda 七轴机械臂；桌面上有红/绿方块、黄色圆柱体、紫色小盒子和红/蓝两个目标箱。四种物体 × 两个箱子构成八种任务。
 
 仓库**已包含仿真源代码**，但场景不是单个静态 MJCF 文件：[`sorting_env.py`](custom_sorting/sorting_env.py)在运行时组合 `TableArena`、Panda 和物体，生成 MuJoCo 模型；[`objects.py`](custom_sorting/objects.py)定义物体；[`sorting.yaml`](configs/sorting.yaml)配置桌子、相机、随机生成范围和动作缩放；[`expert.py`](custom_sorting/expert.py)实现采集用规则专家。
 
