@@ -34,6 +34,15 @@ git clone https://github.com/robocasa/robocasa.git third_party/robocasa
 git -C third_party/robocasa checkout a07e365c958c4216cd6bbd5f30b47f09a65c6f00
 ```
 
+The 30k π0.5 run also requires this repository's [three-file LeRobot patch](../patches/lerobot_pi05_visual_tokenizer.patch). Apply it to the pinned, clean LeRobot checkout before training:
+
+```bash
+git -C lerobot apply --check "$PWD/patches/lerobot_pi05_visual_tokenizer.patch"
+git -C lerobot apply "$PWD/patches/lerobot_pi05_visual_tokenizer.patch"
+```
+
+It adds the `train_vision_with_expert` option and a local tokenizer path override; it does not replace action transforms. See the [README](../README.md) for verification and already-applied handling.
+
 ## Policy environment (Python 3.12)
 
 ```bash

@@ -26,6 +26,19 @@ git clone https://github.com/robocasa/robocasa.git third_party/robocasa
 git -C third_party/robocasa checkout a07e365c958c4216cd6bbd5f30b47f09a65c6f00
 ```
 
+### 应用本项目的 LeRobot π0.5 补丁
+
+上述固定 commit 是上游原版；本次 30k 训练还使用了仓库内的 [LeRobot 补丁](patches/lerobot_pi05_visual_tokenizer.patch)。**克隆后、运行微调命令前**，从本仓库根目录执行以下命令。使用 `git apply`，不要手工覆盖整份 LeRobot 源文件：
+
+```bash
+git -C lerobot apply --check "$PWD/patches/lerobot_pi05_visual_tokenizer.patch"
+git -C lerobot apply "$PWD/patches/lerobot_pi05_visual_tokenizer.patch"
+git -C lerobot apply --reverse --check "$PWD/patches/lerobot_pi05_visual_tokenizer.patch"
+git -C lerobot diff --stat
+```
+
+补丁只改三个文件：`configuration_pi05.py` 新增 `train_vision_with_expert` 配置；`modeling_pi05.py` 在 `train_expert_only=true` 时重新解冻视觉编码器及多模态投影层，语言主干仍冻结；`processor_pi05.py` 允许 `PI05_TOKENIZER_PATH` 指向本地 PaliGemma tokenizer。它**没有修改** OpenPI 的 LIBERO 输入/输出 transform、LeRobot 的相对动作转换或本项目的动作映射。若第一次 `--check` 失败而 `--reverse --check` 成功，说明补丁已应用，不要重复应用；两者都失败时先核对 LeRobot commit 和工作区改动。未打此补丁的固定上游 commit 不认识训练脚本中的 `--policy.train_vision_with_expert=true`。
+
 ```bash
 # 仿真环境：需预先安装适配 GPU 的 NVIDIA 驱动
 conda create -n robocasa python=3.11 -y

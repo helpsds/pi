@@ -1,0 +1,101 @@
+diff --git a/src/lerobot/policies/pi05/configuration_pi05.py b/src/lerobot/policies/pi05/configuration_pi05.py
+index 4bad942b..2bb9f990 100644
+--- a/src/lerobot/policies/pi05/configuration_pi05.py
++++ b/src/lerobot/policies/pi05/configuration_pi05.py
+@@ -103,6 +103,9 @@ class PI05Config(PreTrainedConfig):
+     # Finetuning settings
+     freeze_vision_encoder: bool = False  # Freeze only the vision encoder
+     train_expert_only: bool = False  # Freeze entire VLM, train only action expert and projections
++    # When train_expert_only is enabled, selectively train the visual path while
++    # keeping the language-model backbone frozen.
++    train_vision_with_expert: bool = False
+ 
+     # Optimizer settings: see openpi `AdamW`
+     optimizer_lr: float = 2.5e-5  # see openpi `CosineDecaySchedule: peak_lr`
+@@ -121,6 +124,9 @@ class PI05Config(PreTrainedConfig):
+     def __post_init__(self):
+         super().__post_init__()
+ 
++        if self.freeze_vision_encoder and self.train_vision_with_expert:
++            raise ValueError("freeze_vision_encoder and train_vision_with_expert cannot both be true")
++
+         # Validate configuration
+         if self.n_action_steps > self.chunk_size:
+             raise ValueError(
+diff --git a/src/lerobot/policies/pi05/modeling_pi05.py b/src/lerobot/policies/pi05/modeling_pi05.py
+index 1a59424a..7cff2a8c 100644
+--- a/src/lerobot/policies/pi05/modeling_pi05.py
++++ b/src/lerobot/policies/pi05/modeling_pi05.py
+@@ -296,12 +296,14 @@ class PaliGemmaWithExpertModel(
+         image_size: int = DEFAULT_IMAGE_SIZE,
+         freeze_vision_encoder: bool = False,
+         train_expert_only: bool = False,
++        train_vision_with_expert: bool = False,
+     ):
+         if use_adarms is None:
+             use_adarms = [False, False]
+         super().__init__()
+         self.freeze_vision_encoder = freeze_vision_encoder
+         self.train_expert_only = train_expert_only
++        self.train_vision_with_expert = train_vision_with_expert
+ 
+         vlm_config_hf = CONFIG_MAPPING["paligemma"]()
+         vlm_config_hf._vocab_size = 257152  # noqa: SLF001
+@@ -376,6 +378,15 @@ class PaliGemmaWithExpertModel(
+             self.paligemma.eval()
+             for param in self.paligemma.parameters():
+                 param.requires_grad = False
++            if self.train_vision_with_expert:
++                self.paligemma.model.vision_tower.train()
++                self.paligemma.model.multi_modal_projector.train()
++                for module in (
++                    self.paligemma.model.vision_tower,
++                    self.paligemma.model.multi_modal_projector,
++                ):
++                    for param in module.parameters():
++                        param.requires_grad = True
+ 
+     def train(self, mode: bool = True):
+         super().train(mode)
+@@ -383,6 +394,9 @@ class PaliGemmaWithExpertModel(
+             self.paligemma.model.vision_tower.eval()
+         if self.train_expert_only:
+             self.paligemma.eval()
++            if self.train_vision_with_expert:
++                self.paligemma.model.vision_tower.train(mode)
++                self.paligemma.model.multi_modal_projector.train(mode)
+ 
+     def embed_image(
+         self,
+@@ -543,6 +557,7 @@ class PI05Pytorch(nn.Module):  # see openpi `PI0Pytorch`
+             image_size=config.image_resolution[0],
+             freeze_vision_encoder=config.freeze_vision_encoder,
+             train_expert_only=config.train_expert_only,
++            train_vision_with_expert=config.train_vision_with_expert,
+         )
+ 
+         self.action_in_proj = nn.Linear(config.max_action_dim, action_expert_config.width)
+diff --git a/src/lerobot/policies/pi05/processor_pi05.py b/src/lerobot/policies/pi05/processor_pi05.py
+index b7919f9c..742a403d 100644
+--- a/src/lerobot/policies/pi05/processor_pi05.py
++++ b/src/lerobot/policies/pi05/processor_pi05.py
+@@ -15,6 +15,7 @@
+ # limitations under the License.
+ 
+ from copy import deepcopy
++import os
+ from dataclasses import dataclass
+ from typing import Any
+ 
+@@ -151,7 +152,10 @@ def make_pi05_pre_post_processors(
+             include_state_in_prompt=not config.use_proprioceptive_memory,
+         ),
+         TokenizerProcessorStep(
+-            tokenizer_name="google/paligemma-3b-pt-224",
++            tokenizer_name=os.environ.get(
++                "PI05_TOKENIZER_PATH",
++                "google/paligemma-3b-pt-224",
++            ),
+             max_length=config.tokenizer_max_length,
+             padding_side="right",
+             padding="max_length",
