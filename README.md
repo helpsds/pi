@@ -12,7 +12,7 @@
 
 仿真控制频率 20 Hz、每回合最多 300 步。动作是 `OSC_POSE` 7D：归一化末端平移 3D + 旋转增量 3D + 夹爪 1D（`-1` 张开，`+1` 闭合）。正面/腕部相机各输出 256×256 RGB。原始状态是末端位置 3D + `xyzw` 四元数 4D + 两个夹爪关节 2D，共 9D。指定物体进入指定箱子并释放才算成功。
 
-实验服务器为 Linux、4 × RTX 4090；仿真使用 Python 3.11，策略训练/推理使用 Python 3.12。上游版本与完整依赖见[环境说明](docs/environment.md)。
+实验服务器为 Linux、4 × RTX 4090；仿真使用 Python 3.11，策略训练/推理使用 Python 3.12。**MuJoCo 在服务器上以 EGL 无头模式运行**：不打开桌面窗口，直接离屏渲染相机图像和评测视频。NVIDIA 驱动、EGL/OpenGL 等系统依赖因机器而异，请根据 [MuJoCo 官方可视化文档](https://mujoco.readthedocs.io/en/stable/programming/visualization.html#using-opengl)自行配置并验证；本仓库只给出已用过的环境变量和烟测命令，不代替系统级驱动安装。上游版本与 Python 依赖见[环境说明](docs/environment.md)。
 
 ```bash
 git clone https://github.com/helpsds/pi.git
@@ -151,7 +151,21 @@ python -m json.tool outputs/pi05_sorting_base_vs_ft_10seeds/summary.json
 
 ![训练损失曲线](assets/figures/training_loss.png)
 
-[观看 Base/FT 对比演示（52 秒）](assets/videos/pi05_base_vs_ft_demo.mp4)。单回合示例：[Base 红方块→蓝箱失败](assets/videos/base_red_cube_blue_bin_failure.mp4)、[FT 红方块→蓝箱成功](assets/videos/ft_red_cube_blue_bin_success.mp4)、[FT 绿方块→蓝箱成功](assets/videos/ft_green_cube_blue_bin_success.mp4)、[FT 圆柱体抓起但放置失败](assets/videos/ft_cylinder_place_failure.mp4)。GitHub 可能把 MP4 显示为下载链接。逐任务统计、典型失败分析及指标定义见[实验记录](docs/experiments.md)和[结果文件](results/README.md)。
+Base 与 FT 的完整 52 秒配对演示（已压缩为可在 README 中直接播放的动图）：
+
+![π0.5 Base 与 FT 的完整 Sorting 对比演示](assets/gifs/pi05_base_vs_ft_demo.gif)
+
+单回合成功与失败示例：
+
+| Base：红方块→蓝箱失败 | FT：红方块→蓝箱成功 |
+|---|---|
+| ![Base 未完成红方块到蓝箱任务](assets/gifs/base_red_cube_blue_bin_failure.gif) | ![FT 完成红方块到蓝箱任务](assets/gifs/ft_red_cube_blue_bin_success.gif) |
+
+| FT：绿方块→蓝箱成功 | FT：圆柱体抓起但放置失败 |
+|---|---|
+| ![FT 完成绿方块到蓝箱任务](assets/gifs/ft_green_cube_blue_bin_success.gif) | ![FT 抓起圆柱体但未完成放置](assets/gifs/ft_cylinder_place_failure.gif) |
+
+动图由仓库内 MP4 素材生成，可用 `bash scripts/make_demo_gifs.sh` 重建；无需下载视频即可在 GitHub README 中观看。逐任务统计、典型失败分析及指标定义见[实验记录](docs/experiments.md)和[结果文件](results/README.md)。
 
 保留训练日志时可重画损失曲线（原实验在 10k 恢复）：
 
